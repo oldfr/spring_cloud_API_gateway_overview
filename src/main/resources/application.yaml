@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: first
+          predicates:
+            - Path=/first/
+          uri: localhost:8081
+        - id: second
+          predicates:
+            - Path=/second/
+          uri: localhost:8082
+        - id: internal
+          predicates:
+            - Path=/process/
+          uri: localhost:8080
+
+
+  main:
+    web-application-type: reactive
+
+#logging:
+#  level:
+#    org.springframework.web.HttpLogging: TRACE
+#    reactor.netty.http.server: DEBUG
+#    reactor.netty.http.client: DEBUG
