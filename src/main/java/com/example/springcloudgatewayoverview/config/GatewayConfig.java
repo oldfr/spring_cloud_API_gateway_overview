@@ -1,5 +1,6 @@
 package com.example.springcloudgatewayoverview.config;
 
+import com.example.springcloudgatewayoverview.filter.AuthFilter;
 import com.example.springcloudgatewayoverview.filter.PostGlobalFilter;
 import com.example.springcloudgatewayoverview.filter.RequestFilter;
 import com.example.springcloudgatewayoverview.model.Company;
@@ -18,16 +19,19 @@ public class GatewayConfig {
     @Autowired
     RequestFilter requestFilter;
 
+    @Autowired
+    AuthFilter authFilter;
+
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
                 // adding 2 rotes to first microservice as we need to log request body if method is POST
         return builder.routes()
                 .route("first-microservice",r -> r.path("/first")
                         .and().method("POST")
-                        .and().readBody(Student.class, s -> true).filters(f -> f.filter(requestFilter))
+                        .and().readBody(Student.class, s -> true).filters(f -> f.filters(requestFilter, authFilter))
                         .uri("http://localhost:8081"))
                 .route("first-microservice",r -> r.path("/first")
-                        .and().method("GET")
+                        .and().method("GET").filters(f-> f.filters(authFilter))
                         .uri("http://localhost:8081"))
                /* .route("api-internal-process-microservice",r -> r.path("/process").filters(f -> f.modifyRequestBody(ArrayList.class,
                         Object.class,
@@ -48,12 +52,14 @@ public class GatewayConfig {
                 )*/
                 .route("second-microservice",r -> r.path("/second")
                         .and().method("POST")
-                        .and().readBody(Company.class, s -> true).filters(f -> f.filter(requestFilter))
+                        .and().readBody(Company.class, s -> true).filters(f -> f.filters(requestFilter, authFilter))
                         .uri("http://localhost:8082"))
 
                 .route("second-microservice",r -> r.path("/second")
-                        .and().method("GET")
+                        .and().method("GET").filters(f-> f.filters(authFilter))
                         .uri("http://localhost:8082"))
+                .route("auth-server",r -> r.path("/login")
+                        .uri("http://localhost:8088"))
                 .build();
     }
 

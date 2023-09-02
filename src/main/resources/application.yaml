@@ -16,6 +16,10 @@ spring:
           predicates:
             - Path=/process/
           uri: localhost:8080
+        - id : auth-server
+          predicates:
+            - Path=/login/
+          uri: localhost:8088
 
 
   main:
@@ -26,3 +30,6 @@ spring:
 #    org.springframework.web.HttpLogging: TRACE
 #    reactor.netty.http.server: DEBUG
 #    reactor.netty.http.client: DEBUG
+
+jwt:
+  secret: VHKJMNnbfhbsjkdbVJHVkhbJBKJBsmfnbngygiyguFYVHJbkjnjnsjdnlkfn
