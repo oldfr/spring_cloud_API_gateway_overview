@@ -25,6 +25,11 @@ spring:
   main:
     web-application-type: reactive
 
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
 #logging:
 #  level:
 #    org.springframework.web.HttpLogging: TRACE

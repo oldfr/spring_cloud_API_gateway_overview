@@ -13,7 +13,7 @@ public class RequestFilter implements GatewayFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         Object body = exchange.getAttribute("cachedRequestBodyObject");
-        System.out.println("in filter");
+        System.out.println("in request filter");
         if(body instanceof Student) {
             System.out.println("body:" + (Student) body);
         }
