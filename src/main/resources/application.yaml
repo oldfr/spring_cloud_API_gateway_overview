@@ -38,3 +38,9 @@ eureka:
 
 jwt:
   secret: VHKJMNnbfhbsjkdbVJHVkhbJBKJBsmfnbngygiyguFYVHJbkjnjnsjdnlkfn
+
+server:
+  port: 8080
+
+authentication:
+  enabled: false

@@ -4,6 +4,7 @@ import com.example.springcloudgatewayoverview.util.JWTUtil;
 import com.example.springcloudgatewayoverview.validator.RouteValidator;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -24,11 +25,19 @@ public class AuthFilter implements GatewayFilter {
     @Autowired
     private JWTUtil jwtUtil;
 
+    @Value("${authentication.enabled}")
+    private boolean authEnabled;
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        if(!authEnabled) {
+            return chain.filter(exchange);
+        }
         ServerHttpRequest request = exchange.getRequest();
 
         if(routeValidator.isSecured.test(request)) {
+            System.out.println("validating authentication token");
+
             if(this.isAUthMissing(request)) {
                 return this.onError(exchange,"Auth missing",HttpStatus.UNAUTHORIZED);
             }
