@@ -1,5 +1,6 @@
 package com.example.springcloudgatewayoverview.filter;
 
+import com.example.springcloudgatewayoverview.util.AuthUtil;
 import com.example.springcloudgatewayoverview.util.JWTUtil;
 import com.example.springcloudgatewayoverview.validator.RouteValidator;
 import io.jsonwebtoken.Claims;
@@ -25,6 +26,9 @@ public class AuthFilter implements GatewayFilter {
     @Autowired
     private JWTUtil jwtUtil;
 
+    @Autowired
+    private AuthUtil authUtil;
+
     @Value("${authentication.enabled}")
     private boolean authEnabled;
 
@@ -37,11 +41,11 @@ public class AuthFilter implements GatewayFilter {
 
         if(routeValidator.isSecured.test(request)) {
             System.out.println("validating authentication token");
-
-            if(this.isAUthMissing(request)) {
-                return this.onError(exchange,"Auth missing",HttpStatus.UNAUTHORIZED);
+            if(this.isCredsMissing(request)) {
+                return this.onError(exchange,"Credentials missing",HttpStatus.UNAUTHORIZED);
             }
-            final String token = this.getAuthHeader(request).split(" ")[1].trim();
+//            final String token = this.getAuthHeader(request).split(" ")[1].trim();
+            final String token = authUtil.getToken(request.getHeaders().get("userName").toString(),request.getHeaders().get("role").toString());
 
             if(jwtUtil.isInvalid(token)) {
                 return this.onError(exchange,"Auth header invalid",HttpStatus.UNAUTHORIZED);
@@ -63,8 +67,9 @@ public class AuthFilter implements GatewayFilter {
     }
 
 
-    private boolean isAUthMissing(ServerHttpRequest request) {
-        return !request.getHeaders().containsKey("Authorization");
+    private boolean isCredsMissing(ServerHttpRequest request) {
+        return !(request.getHeaders().containsKey("userName") && request.getHeaders().containsKey("role"));
+//        return !request.getHeaders().containsKey("Authorization");
     }
 
     private void populateRequestWithHeaders(ServerWebExchange exchange, String token) {

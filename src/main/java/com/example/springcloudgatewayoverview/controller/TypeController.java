@@ -3,6 +3,7 @@ package com.example.springcloudgatewayoverview.controller;
 import com.example.springcloudgatewayoverview.model.Company;
 import com.example.springcloudgatewayoverview.model.Student;
 import com.example.springcloudgatewayoverview.model.Type;
+import com.example.springcloudgatewayoverview.util.AuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +18,9 @@ public class TypeController {
 
     @Autowired
     RestTemplate restTemplate;
+
+    @Autowired
+    private AuthUtil authUtil;
 
     @PostMapping
     public String getType(@RequestBody Type type) {
@@ -41,14 +45,8 @@ public class TypeController {
 
     private HttpHeaders setAuthHeader() {
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization","Bearer "+getToken());
+        headers.set("Authorization","Bearer "+authUtil.getToken("testuser","admin"));
         return headers;
-    }
-
-    private String getToken() {
-        ResponseEntity<String> response = restTemplate.exchange("http://localhost:8088/login",HttpMethod.GET,null,String.class);
-        System.out.println("token:"+response.getBody());
-        return response.getBody();
     }
 
 }
