@@ -37,15 +37,22 @@ public class AuthFilter implements GatewayFilter {
         if(!authEnabled) {
             return chain.filter(exchange);
         }
+        String token ="";
         ServerHttpRequest request = exchange.getRequest();
 
         if(routeValidator.isSecured.test(request)) {
             System.out.println("validating authentication token");
             if(this.isCredsMissing(request)) {
+                System.out.println("in error");
                 return this.onError(exchange,"Credentials missing",HttpStatus.UNAUTHORIZED);
             }
 //            final String token = this.getAuthHeader(request).split(" ")[1].trim();
-            final String token = authUtil.getToken(request.getHeaders().get("userName").toString(),request.getHeaders().get("role").toString());
+            if (request.getHeaders().containsKey("userName") && request.getHeaders().containsKey("role")) {
+                token = authUtil.getToken(request.getHeaders().get("userName").toString(), request.getHeaders().get("role").toString());
+            }
+            else {
+                token = request.getHeaders().get("Authorization").toString().split(" ")[1];
+            }
 
             if(jwtUtil.isInvalid(token)) {
                 return this.onError(exchange,"Auth header invalid",HttpStatus.UNAUTHORIZED);
@@ -68,7 +75,7 @@ public class AuthFilter implements GatewayFilter {
 
 
     private boolean isCredsMissing(ServerHttpRequest request) {
-        return !(request.getHeaders().containsKey("userName") && request.getHeaders().containsKey("role"));
+        return !(request.getHeaders().containsKey("userName") && request.getHeaders().containsKey("role")) && !request.getHeaders().containsKey("Authorization");
 //        return !request.getHeaders().containsKey("Authorization");
     }
 
