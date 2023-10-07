@@ -22,29 +22,4 @@ public class RequestFilter implements GatewayFilter {
         }
         return chain.filter(exchange);
     }
-    //ModifyRequestBodyGatewayFilterFactory {
-
-   /* @Override
-    public GatewayFilter apply(Config config) {
-        config.setRewriteFunction(String.class, String.class,
-                (exchange, originContent) -> {
-                    System.out.println("originContent:"+originContent);
-*/
-    /*                    try {
-                        ByteBuffer byteBuffer = Mono.from(exchange.getRequest().getBody()).toFuture().get().asByteBuffer();
-                        byte[] bytes = new byte[byteBuffer.capacity()];
-                        while (byteBuffer.hasRemaining()) {
-                            byteBuffer.get(bytes);
-                        }
-                        System.out.println(new String(bytes, Charset.forName("UTF-8")));
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    }*//*
-                    return Mono.just(originContent);
-                });
-
-        return super.apply(config);
-    }*/
 }

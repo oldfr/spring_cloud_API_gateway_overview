@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
@@ -46,7 +48,6 @@ public class TypeController {
 
     private HttpHeaders setAuthHeader(String userName, String role) {
         HttpHeaders headers = new HttpHeaders();
-//        headers.set("Authorization","Bearer "+authUtil.getToken("testuser","admin"));
         headers.set("Authorization","Bearer "+authUtil.getToken(userName,role));
         return headers;
     }
