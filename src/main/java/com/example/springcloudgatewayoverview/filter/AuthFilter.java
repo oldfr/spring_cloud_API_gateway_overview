@@ -35,6 +35,7 @@ public class AuthFilter implements GatewayFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         if(!authEnabled) {
+            System.out.println("Authentication is disabled. To enable it, make \"authentication.enabled\" property as true");
             return chain.filter(exchange);
         }
         String token ="";
