@@ -56,6 +56,9 @@ public class AuthFilter implements GatewayFilter {
             if(jwtUtil.isInvalid(token)) {
                 return this.onError(exchange,"Auth header invalid",HttpStatus.UNAUTHORIZED);
             }
+            else {
+                System.out.println("Authentication is successful");
+            }
 
             this.populateRequestWithHeaders(exchange,token);
         }
